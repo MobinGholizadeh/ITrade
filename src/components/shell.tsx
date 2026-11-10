@@ -62,6 +62,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
   const infrastructureReady = connected && report?.status === "healthy";
   return (
     <div className={`app-shell ${collapsed ? "rail-mode" : ""}`}>
+      <div className="app-backdrop" aria-hidden="true" />
       <a className="skip-link" href="#main">
         Skip to content
       </a>
