@@ -1,0 +1,5 @@
+CREATE TABLE technical_snapshots(provider text NOT NULL,asset text NOT NULL,timeframe text NOT NULL,data jsonb NOT NULL,updated_at timestamptz NOT NULL DEFAULT now(),PRIMARY KEY(provider,asset,timeframe));
+CREATE TABLE alert_rules(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),asset text NOT NULL,timeframe text NOT NULL,lower_price numeric NOT NULL CHECK(lower_price>0),upper_price numeric NOT NULL CHECK(upper_price>=lower_price),enabled boolean NOT NULL DEFAULT true,created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE alerts(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),dedup_key text NOT NULL,asset text NOT NULL,type text NOT NULL,priority text NOT NULL,status text NOT NULL DEFAULT 'active' CHECK(status IN('active','acknowledged','resolved','expired','invalidated')),evidence jsonb NOT NULL,explanation jsonb,created_at timestamptz NOT NULL DEFAULT now(),expires_at timestamptz NOT NULL);
+CREATE INDEX alerts_dedup ON alerts(dedup_key,created_at DESC);
+CREATE TABLE alert_events(id bigserial PRIMARY KEY,alert_id uuid NOT NULL REFERENCES alerts(id) ON DELETE CASCADE,status text NOT NULL,created_at timestamptz NOT NULL DEFAULT now());

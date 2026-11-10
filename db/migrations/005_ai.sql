@@ -1,0 +1,3 @@
+CREATE TABLE ai_usage(id uuid PRIMARY KEY DEFAULT gen_random_uuid(), request_key text NOT NULL, model text NOT NULL, status text NOT NULL DEFAULT 'reserved', input_tokens integer, output_tokens integer, created_at timestamptz NOT NULL DEFAULT now(), completed_at timestamptz);
+CREATE INDEX ai_usage_daily ON ai_usage(created_at);
+CREATE TABLE ai_analyses(id uuid PRIMARY KEY DEFAULT gen_random_uuid(), request_key text NOT NULL UNIQUE, asset text, kind text NOT NULL, context jsonb NOT NULL, result jsonb NOT NULL, usage_id uuid REFERENCES ai_usage(id), created_at timestamptz NOT NULL DEFAULT now());
